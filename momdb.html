@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Mom Dashboard — Mom's Cloud Kitchen</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- Inherit shared look & feel -->
+  <link rel="stylesheet" href="loginpg.css">
+  <!-- Dashboard-specific tweaks layered on top -->
+  <style>
+    /* --------------------
+   🌸 Global Theme Tokens
+--------------------- */
+:root {
+  --bg-light: #fff7f3;
+  --bg-deep: #2c2c54;
+  --accent: #ff6f61;
+  --card: #ffffff;
+  --muted: #666;
+  --white: #ffffff;
+
+  --radius: 16px;
+  --shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  --gap: 20px;
+
+  --font: "Segoe UI", Arial, sans-serif;
+}
+
+/* --------------------
+   🌸 Base Reset
+--------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg-light);
+  color: var(--bg-deep);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------
+   🌸 Top Bar Navigation
+--------------------- */
+.topbar {
+  background: var(--card);
+  box-shadow: var(--shadow);
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand .logo {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.topnav ul {
+  list-style: none;
+  display: flex;
+  gap: 14px;
+}
+
+.topnav a {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--bg-deep);
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.topnav a:hover {
+  background: #fff5f2;
+  transform: translateY(-1px);
+}
+
+.topnav a:focus-visible {
+  outline: 3px solid #ffcc99;
+  outline-offset: 2px;
+}
+
+.topnav a.active {
+  background: var(--accent);
+  color: var(--white);
+}
+
+/* --------------------
+   🌸 Main Content Hub
+--------------------- */
+.hub {
+  flex: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 20px 40px;
+}
+
+.page-title {
+  margin-bottom: 24px;
+  color: var(--bg-deep);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 800;
+}
+
+/* --------------------
+   🌸 Stat Cards
+--------------------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--gap);
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.stat-card h2 {
+  margin: 0 0 6px;
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.stat-card p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* --------------------
+   🌸 Buttons
+--------------------- */
+.btn {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  background: #e65c50;
+  transform: translateY(-2px);
+}
+
+.btn:focus-visible {
+  outline: 3px solid #ffcc99;
+  outline-offset: 2px;
+}
+
+.btn--secondary {
+  background: #f0f0f0;
+  color: var(--bg-deep);
+}
+
+.btn--secondary:hover {
+  background: #e6e6e6;
+}
+
+/* --------------------
+   🌸 Quick Actions
+--------------------- */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+/* --------------------
+   🌸 Recent Orders
+--------------------- */
+.recent-orders h2 {
+  margin: 0 0 14px;
+  color: var(--bg-deep);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.table-wrap {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+
+.recent-orders table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+
+.recent-orders th,
+.recent-orders td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+}
+
+.recent-orders th {
+  background: #fafafa;
+  color: var(--bg-deep);
+  font-weight: 700;
+}
+
+.recent-orders tr:last-child td {
+  border-bottom: none;
+}
+
+/* --------------------
+   🌸 Status Badges
+--------------------- */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.badge.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+/* --------------------
+   🌸 Responsive Tweaks
+--------------------- */
+@media (max-width: 720px) {
+  .topnav ul {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .topnav a {
+    padding: 8px 10px;
+  }
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <header class="topbar" role="banner">
+    <div class="brand">
+      <a href="index.html" class="logo" aria-label="Mom's Cloud Kitchen home">🍲 Mom's Cloud Kitchen</a>
+    </div>
+    <nav class="topnav" aria-label="Top">
+      <ul>
+        <li><a href="mom-dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="#">Orders</a></li>
+        <li><a href="#">Earnings</a></li>
+        <li><a href="#">Profile</a></li>
+        <li><a href="index.html">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="hub" role="main">
+    <h1 class="page-title">Welcome back, Mom 👩‍🍳</h1>
+
+   
+   <!-- KPIs -->
+<section class="stats" aria-label="Key metrics">
+  <article class="stat-card">
+    <h2 id="totalEarnings">₹0</h2>
+    <p>Total Earnings</p>
+  </article>
+  <article class="stat-card">
+    <h2 id="activeOrders">0</h2>
+    <p>Active Orders</p>
+  </article>
+  <article class="stat-card">
+    <h2 id="completedOrders">0</h2>
+    <p>Completed Orders</p>
+  </article>
+  <article class="stat-card">
+    <h2 id="dishesListed">0</h2>
+    <p>Dishes Listed</p>
+  </article>
+</section>
+
+<!-- Recent orders -->
+<section class="recent-orders" aria-labelledby="recentTitle">
+  <h2 id="recentTitle">Recent Orders</h2>
+  <div class="table-wrap" role="region" aria-label="Recent orders table" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Dish</th>
+          <th>Status</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody id="ordersTableBody">
+        <!-- Orders will be injected by JS -->
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+    <!-- Quick actions -->
+    <section class="actions" aria-label="Quick actions">
+      <button class="btn">➕ Add Dish</button>
+      <button class="btn btn--secondary">📋 Manage Orders</button>
+      <button class="btn btn--secondary">💰 View Earnings</button>
+    </section>
+
+    <!-- Recent orders -->
+    <section class="recent-orders" aria-labelledby="recentTitle">
+      <h2 id="recentTitle">Recent Orders</h2>
+      <div class="table-wrap" role="region" aria-label="Recent orders table" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Dish</th>
+              <th>Status</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#1021</td>
+              <td>Anita</td>
+              <td>Paneer Butter Masala</td>
+              <td><span class="badge pending">Cooking</span></td>
+              <td>₹250</td>
+            </tr>
+            <tr>
+              <td>#1019</td>
+              <td>Mahadev</td>
+              <td>Idli Sambhar</td>
+              <td><span class="badge success">Completed</span></td>
+              <td>₹120</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script>
+    // Mom Dashboard JS
+document.addEventListener("DOMContentLoaded", () => {
+  // KPI counters
+  const earningsEl = document.getElementById("totalEarnings");
+  const activeOrdersEl = document.getElementById("activeOrders");
+  const completedOrdersEl = document.getElementById("completedOrders");
+  const dishesListedEl = document.getElementById("dishesListed");
+  const ordersTableBody = document.getElementById("ordersTableBody");
+
+  // Initial state
+  let dashboardData = {
+    earnings: 0,
+    activeOrders: 0,
+    completedOrders: 0,
+    dishesListed: 15, // Example: already 15 dishes listed
+    orders: []
+  };
+
+  // Utility: update UI
+  function updateUI() {
+    earningsEl.textContent = `₹${dashboardData.earnings}`;
+    activeOrdersEl.textContent = dashboardData.activeOrders;
+    completedOrdersEl.textContent = dashboardData.completedOrders;
+    dishesListedEl.textContent = dashboardData.dishesListed;
+
+    // Refresh table
+    ordersTableBody.innerHTML = "";
+    dashboardData.orders.forEach(order => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>#${order.id}</td>
+        <td>${order.customer}</td>
+        <td>${order.dish}</td>
+        <td><span class="badge ${order.status === "Completed" ? "success" : "pending"}">${order.status}</span></td>
+        <td>₹${order.amount}</td>
+      `;
+      ordersTableBody.appendChild(row);
+    });
+  }
+
+  // Add a new order (to be called from customer side later)
+  window.addOrder = function (customer, dish, amount) {
+    const newOrder = {
+      id: 1000 + dashboardData.orders.length + 1,
+      customer,
+      dish,
+      status: "Cooking",
+      amount
+    };
+    dashboardData.orders.unshift(newOrder); // newest first
+    dashboardData.activeOrders++;
+    updateUI();
+  };
+
+  // Mark order completed (to be called from mom’s action)
+  window.completeOrder = function (orderId) {
+    const order = dashboardData.orders.find(o => o.id === orderId);
+    if (order && order.status !== "Completed") {
+      order.status = "Completed";
+      dashboardData.activeOrders--;
+      dashboardData.completedOrders++;
+      dashboardData.earnings += order.amount;
+      updateUI();
+    }
+  };
+
+  // Initial render
+  updateUI();
+});
+
+  </script>
+</body>
+</html>
